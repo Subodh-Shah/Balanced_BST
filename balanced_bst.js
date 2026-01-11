@@ -36,8 +36,18 @@ class Tree {
 		return this;
 	}
 	
+	findNode(value) {
+		function find(node) {
+			if(node === null) return null; // Not Found
+			if(node.value === value) return node;
+			if(node.value > value) return find(node.left);
+			else return find (node.right);
+		}
+		return find(this.root);
+	}
+	
 	// Breadth First Traversal
-	levelOrderTraverse(callback) {
+	levelOrderForEach(callback) {
 		if(typeof callback !== "function") {
 				throw new Error("Callback should be a Function Data Type");
 		}
@@ -46,13 +56,16 @@ class Tree {
 			return;
 		}
 		let queue = [];
+		let result = [];
 		queue.push(this.root);
 		while(queue.length > 0) {
 			let current_node = queue.shift();
 			callback(current_node);
+			result.push(current_node);
 			if(current_node.left !== null) queue.push(current_node.left);
 			if(current_node.right !== null) queue.push(current_node.right);
 		}
+		return result;
 	}
 	
 	preOrderForEach(callback) {
@@ -85,17 +98,44 @@ class Tree {
 		if(typeof callback !== "function") {
 				throw new Error("Callback should be a Function Data Type");
 		}
+		let result = [];
 		function traverse(node) {
 			if(node === null) return;
 			traverse(node.left);
 			callback(node);
+			result.push(node.value); //Cause it can give sorted tree array
 			traverse(node.right);
 		}
 		traverse(this.root);
+		return result;
 	}
 	
-	height(value) {}
-	depth(value) {}
+	height(value) {
+		let equal_node = this.findNode(value);
+		if(equal_node === null) return -1;
+		function height_tracker(node) {
+			if(node === null) return -1;
+			let left_h = height_tracker(node.left);
+			let right_h = height_tracker(node.right);
+			return 1 + Math.max(left_h, right_h);
+		}
+		return height_tracker(equal_node);
+	}
+	
+	depth(value) {
+		function depth_tracker(node, currentDepth = 0) {
+			if(node === null) return -1;
+			if (node.value === value) return currentDepth;
+			if (node.value > value) {
+				return depth_tracker(node.left, currentDepth + 1);
+			}
+			if(node.value < value) {
+				return depth_tracker(node.right, currentDepth + 1);
+			}
+		}
+		
+		return depth_tracker(this.root);
+	}
 }
 
 function balanced_BST_Maker(array) {
