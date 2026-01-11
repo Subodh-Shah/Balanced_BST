@@ -26,6 +26,45 @@ class Tree {
 		}
 		return check_height(this.root) !== false;
 	}
+	
+	//Pre-order Traversal: Root Left Right
+	preOrder() {
+		let result = [];
+		function traverse(node) {
+			if(node === null) return;
+			result.push(node.value);
+			traverse(node.left);
+			traverse(node.right);
+		}
+		traverse(this.root);
+		return result;
+	}
+	
+	// Post-order Traversal: Left Right Root
+	postOrder() {
+		let result = [];
+		function traverse(node) {
+			if(node === null) return;
+			traverse(node.left);
+			traverse(node.right);
+			result.push(node.value);
+		}
+		traverse(this.root);
+		return result;
+	}
+	
+	// In-order Traversal: Left Root Right
+	inOrder() {
+		let result = [];
+		function traverse(node) {
+			if (node === null) return;
+			traverse(node.left);
+			result.push(node.value);
+			traverse(node.right);
+		}
+		traverse(this.root);
+		return result;
+	}
 }
 
 function balanced_BST_Maker(array) {
