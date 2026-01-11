@@ -27,44 +27,75 @@ class Tree {
 		return check_height(this.root) !== false;
 	}
 	
-	//Pre-order Traversal: Root Left Right
-	preOrder() {
-		let result = [];
-		function traverse(node) {
-			if(node === null) return;
-			result.push(node.value);
-			traverse(node.left);
-			traverse(node.right);
-		}
-		traverse(this.root);
-		return result;
+	reBalance() {
+		let balanced = this.isBalanced();
+		if(balanced) return;
+		let treeArray = this.inOrder();
+		let root = balanced_BST_Maker(treeArray);
+		this.root = root;
+		return this;
 	}
 	
-	// Post-order Traversal: Left Right Root
-	postOrder() {
-		let result = [];
+	// Breadth First Traversal
+	levelOrderTraverse(callback) {
+		if(typeof callback !== "function") {
+				throw new Error("Callback should be a Function Data Type");
+		}
+		
+		if(this.root === null) {
+			return;
+		}
+		let queue = [];
+		queue.push(this.root);
+		while(queue.length > 0) {
+			let current_node = queue.shift();
+			callback(current_node);
+			if(current_node.left !== null) queue.push(current_node.left);
+			if(current_node.right !== null) queue.push(current_node.right);
+		}
+	}
+	
+	preOrderForEach(callback) {
+		if(typeof callback !== "function") {
+				throw new Error("Callback should be a Function Data Type");
+		}
+		function traverse(node) {
+			if(node === null) return;
+			callback(node);
+			traverse(node.left);
+			traverse(node.right);
+		}
+		traverse(this.root);
+	}
+	
+	postOrderForEach(callback) {
+		if(typeof callback !== "function") {
+				throw new Error("Callback should be a Function Data Type");
+		}
 		function traverse(node) {
 			if(node === null) return;
 			traverse(node.left);
 			traverse(node.right);
-			result.push(node.value);
+			callback(node);
 		}
 		traverse(this.root);
-		return result;
 	}
 	
-	// In-order Traversal: Left Root Right
-	inOrder() {
-		let result = [];
+	inOrderForEach(callback) {
+		if(typeof callback !== "function") {
+				throw new Error("Callback should be a Function Data Type");
+		}
 		function traverse(node) {
-			if (node === null) return;
+			if(node === null) return;
 			traverse(node.left);
-			result.push(node.value);
+			callback(node);
 			traverse(node.right);
 		}
 		traverse(this.root);
-		return result;
 	}
+	
+	height(value) {}
+	depth(value) {}
 }
 
 function balanced_BST_Maker(array) {
